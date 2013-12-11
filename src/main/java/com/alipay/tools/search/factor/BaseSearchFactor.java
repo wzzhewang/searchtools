@@ -12,7 +12,7 @@ import java.util.List;
  * Time: 6:06 PM
  * To change this template use File | Settings | File Templates.
  */
-public class BaseSearchFactor implements SearchFactor {
+public class BaseSearchFactor implements SearchFactor<BaseSearchFactor> {
     private String key;
     private List<String> result=new ArrayList<String>();
     String getKey() {
@@ -29,7 +29,7 @@ public class BaseSearchFactor implements SearchFactor {
     void setResult(List<String> result) {
         this.result = result;
     }
-    public  BaseSearchFactor search(BufferedReader reader,String searchcode,String fileName) throws IOException {
+    public  BaseSearchFactor search(ReadLine reader,String searchcode,String fileName) throws IOException {
         BaseSearchFactor factor=new BaseSearchFactor();
         factor.setKey(fileName);
         String line=null;

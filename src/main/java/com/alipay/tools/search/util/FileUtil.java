@@ -424,10 +424,6 @@ public class FileUtil {
                     }
                     cols.add(new String(byteBuffer, 0, inputPos, charset));
                     break;
-                case '|':
-                    cols.add(new String(byteBuffer, 0, inputPos, charset));
-                    inputPos = 0;
-                    break;
                 default:
                     byteBuffer[inputPos++] = ((byte) c);
                     break;

@@ -2,6 +2,7 @@ package com.alipay.tools.search.factor;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.util.List;
 
 /**
  * ËÑË÷²ßÂÔ.
@@ -11,5 +12,6 @@ import java.io.IOException;
  * To change this template use File | Settings | File Templates.
  */
 public interface SearchFactor<T> {
-    public  T search(BufferedReader reader,String searchcode,String fileName)throws IOException;
+
+    public  T search(ReadLine reader,String searchcode,String fileName)throws IOException;
 }

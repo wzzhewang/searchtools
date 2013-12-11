@@ -2,6 +2,7 @@ package com.alipay.tools.search;
 
 import com.alibaba.common.logging.Logger;
 import com.alibaba.common.logging.LoggerFactory;
+import com.alipay.tools.search.factor.ReadLine;
 import com.alipay.tools.search.factor.SearchFactor;
 import com.alipay.tools.search.thread.MutiThreadSearch;
 import com.alipay.tools.search.thread.MutiThreadSearchImpl;
@@ -21,16 +22,16 @@ import java.util.concurrent.Executors;
  * Time: 8:26 PM
  * To change this template use File | Settings | File Templates.
  */
-public class BaseFileSearch<T> implements IFileSearch<T>{
+public class BaseFileSearch<T> implements IFileSearch<T> {
     private static final Logger logger = LoggerFactory.getLogger(BaseFileSearch.class);
     /**
      * 写缓存
      */
-    private static final int BUFFER_SIZE = 1024 * 64;
-    private MutiThreadSearch<T> search = new MutiThreadSearchImpl<T>();
+    protected static final int BUFFER_SIZE = 1024 * 64;
+    protected MutiThreadSearch<T> search = new MutiThreadSearchImpl<T>();
 
     //线程池
-    private ExecutorService executorService;
+    protected ExecutorService executorService;
 
     public BaseFileSearch() {
         this.executorService = Executors.newFixedThreadPool(100);
@@ -46,7 +47,7 @@ public class BaseFileSearch<T> implements IFileSearch<T>{
      * @param rootPrefix
      * @return
      */
-    public String search(final String searchContent, final List<String> filePaths, final String rootPrefix,final SearchFactor<T> searchFactor) {
+    public String search(final String searchContent, final List<String> filePaths, final String rootPrefix, final SearchFactor<T> searchFactor) {
         StringBuffer paramKey = new StringBuffer();
         paramKey.append(searchContent);
         for (String path : filePaths) {
@@ -72,14 +73,23 @@ public class BaseFileSearch<T> implements IFileSearch<T>{
             }
 
             private void search(final String key, final String searchContent, final String fileName) {
-                try{
+                try {
                     search.searchContent(key, new Callable<T>() {
+                        private T search(final BufferedReader reader)throws IOException {
+                            return searchFactor.search(new ReadLine() {
+                                @Override
+                                public String readLine() throws IOException{
+                                    return reader.readLine();
+                                }
+                            }, searchContent, fileName);
+                        }
+
                         public T call() {
                             BufferedReader reader = null;
                             try {
                                 reader = new BufferedReader(new FileReader(fileName), BUFFER_SIZE);
-                                logger.info("文件搜索："+fileName);
-                                return searchFactor.search(reader,searchContent,fileName);
+                                logger.info("文件搜索：" + fileName);
+                                return search(reader);
 
                             } catch (IOException e) {
                                 logger.error("文件搜索是发生错误：" + e.getMessage(), e);
@@ -95,7 +105,7 @@ public class BaseFileSearch<T> implements IFileSearch<T>{
                             return null;
                         }
                     });
-                }catch(IOException e){
+                } catch (IOException e) {
                     logger.error("serach exception:", e);
                 }
             }
@@ -107,11 +117,13 @@ public class BaseFileSearch<T> implements IFileSearch<T>{
     }
 
     /**
+     * 获取结果.
+     *
      * @param id
      * @return
      */
 
-    public List<T> getResult (String id){
+    public List<T> getResult(String id) {
         return search.getResult(id);
     }
 }
