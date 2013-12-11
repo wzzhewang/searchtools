@@ -33,7 +33,7 @@ public class MutiThreadSearchImpl<T> implements MutiThreadSearch<T> {
         }
     }
 
-    MutiThreadSearchImpl() {
+    public MutiThreadSearchImpl() {
         executorService = Executors.newFixedThreadPool(100);
     }
 
