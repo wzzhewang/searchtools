@@ -1,5 +1,7 @@
 package com.alipay.tools.search;
 
+import com.alibaba.common.logging.Logger;
+import com.alibaba.common.logging.LoggerFactory;
 import com.alipay.tools.search.factor.BaseSearchFactor;
 
 import java.io.BufferedWriter;
@@ -9,6 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.alipay.tools.search.util.FileUtil;
+import com.sun.deploy.util.SystemUtils;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
@@ -27,11 +30,12 @@ import java.util.List;
  * To change this template use File | Settings | File Templates.
  */
 public class BaseFileSearchTest {
+    private static final Logger logger = LoggerFactory.getLogger(BaseFileSearchTest.class);
     @Rule
     public TemporaryFolder temporaryFolder = new TemporaryFolder();
 
     private String key;
-    private BaseFileSearch<BaseSearchFactor> search=new BaseFileSearch<BaseSearchFactor>();
+
 
     public void setup() {
         String root = temporaryFolder.getRoot().getAbsolutePath();
@@ -82,29 +86,38 @@ public class BaseFileSearchTest {
     }
     @Test
     public void testSearch() throws Exception {
-        setup();
-        String path1 = temporaryFolder.getRoot().getAbsolutePath();
 
+        BaseFileSearch<BaseSearchFactor> search=new BaseFileSearch<BaseSearchFactor>();
+        String file="/Users/wangzhe/project/git";
         List<String> paths=new ArrayList<String>();
-        paths.add("file1");
-        paths.add("file2");
-        paths.add("file3");
-        paths.add("file4");
-        paths.add("file5");
+        paths.add("allocation_test.txt");
+        key=search.search("201311060002300002300004006082",paths,file,new BaseSearchFactor());
+        long startTime = System.currentTimeMillis();
+        List<BaseSearchFactor> result=null;
+        while(result==null){
+            result =search.getResult(key);
+            Thread.sleep(1000l);
+        }
+        long endTime = System.currentTimeMillis();
+        logger.info("cost time: "+(endTime-startTime));
+    }
 
-
-        key=search.search("test1111",paths,path1,new BaseSearchFactor());
-
+    @Test
+    public void testGetResult() throws Exception {
+        RandFileSearch<BaseSearchFactor> search=new RandFileSearch<BaseSearchFactor>();
+        String file="/Users/wangzhe/project/git";
+        List<String> paths=new ArrayList<String>();
+        paths.add("allocation_test.txt");
+        key=search.search("201311060002300002300004006082",paths,file,new BaseSearchFactor());
+        long startTime = System.currentTimeMillis();
         List<BaseSearchFactor> result=null;
         while(result==null){
             result =search.getResult(key);
             Thread.sleep(1000l);
         }
 
-    }
-
-    @Test
-    public void testGetResult() throws Exception {
+        long endTime = System.currentTimeMillis();
+        logger.info("cost time: "+(endTime-startTime));
 
     }
 }
