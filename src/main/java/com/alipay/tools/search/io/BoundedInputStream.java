@@ -1,9 +1,6 @@
 package com.alipay.tools.search.io;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.RandomAccessFile;
+import java.io.*;
 
 /**
  * Created with IntelliJ IDEA.
@@ -113,5 +110,28 @@ public class BoundedInputStream extends InputStream {
         else {
             this.randomAccessFile.seek(0);
         }
+    }
+    public static  BufferedReader createReader(File file,long offset,long length,int mode,String encoding) throws IOException {
+
+
+        BoundedInputStream boundedInputStream = new BoundedInputStream(
+                file,
+                offset,
+                length
+        );
+
+        // 设置工作模式
+        boundedInputStream.setMode(mode);
+        if(mode == 1) {
+            // 重置到行首, 用于读取汇总和标题数据
+            boundedInputStream.rewind();
+        }
+
+        return new BufferedReader(
+                new InputStreamReader(
+                        boundedInputStream,
+                        encoding
+                )
+        );
     }
 }

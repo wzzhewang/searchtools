@@ -58,7 +58,9 @@ public class MutiThreadSearchImpl<T> implements MutiThreadSearch<T> {
                 synchronized (this) {
                     if (future.isDone() && !future.isCancelled()) {
                         T content = future.get();
-
+                         if(content==null){
+                             this.wait(1000);
+                         }
                         if (result.get(key) == null) {
                             result.put(key, new MergeResult<T>());
                         }

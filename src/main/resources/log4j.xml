@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="GB2312"?>
+<!DOCTYPE log4j:configuration SYSTEM "log4j.dtd">
+
+<!-- @version $Id: log4j.xml.vm,v 1.90 2006/11/02 12:11:34 yaojd Exp $ -->
+
+<!--
+  - Log4j配置文件。
+-->
+<log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/">
+    <!-- ===================================================================== -->
+    <!-- Appenders                                                             -->
+    <!-- ===================================================================== -->
+
+    <!-- ===== [公共Appender] ===== -->
+
+    <!-- [公共Appender] 默认 -->
+    <appender name="DEFAULT-APPENDER" class="com.alibaba.common.logging.spi.log4j.DailyRollingFileAppender">
+        <param name="file" value="${loggingRoot}/${sys_host_name}/common-default.log"/>
+        <param name="append" value="true"/>
+        <param name="encoding" value="GBK"/>
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="%d [%X{loginUserEmail}/%X{loginUserID}/%X{remoteAddr}/%X{clientId} - %X{requestURIWithQueryString}] %-5p %c{2} - %m%n"/>
+        </layout>
+    </appender>
+
+    <!-- [公共Appender] 汇总错误 -->
+    <appender name="ERROR-APPENDER" class="com.alibaba.common.logging.spi.log4j.DailyRollingFileAppender">
+        <param name="file" value="${loggingRoot}/${sys_host_name}/common-error.log"/>
+        <param name="append" value="true"/>
+        <param name="encoding" value="GBK"/>
+        <param name="threshold" value="error"/>
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="%d [%X{loginUserEmail}/%X{loginUserID}/%X{remoteAddr}/%X{clientId} - %X{requestURIWithQueryString}] %-5p %c{2} - %m%n"/>
+        </layout>
+    </appender>
+
+    <!-- [公共Appender] critical错误 -->
+    <appender name="CRITICAL-APPENDER" class="com.alibaba.common.logging.spi.log4j.DailyRollingFileAppender">
+        <param name="file" value="${loggingRoot}/${sys_host_name}/common-critical.log"/>
+        <param name="append" value="true"/>
+        <param name="encoding" value="GBK"/>
+        <param name="threshold" value="error"/>
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="%d [%X{loginUserEmail}/%X{loginUserID}/%X{remoteAddr}/%X{clientId} - %X{requestURIWithQueryString}] %-5p %c{2} - %m%n"/>
+        </layout>
+    </appender>
+
+    <!-- [公共Appender] 汇总性能统计 -->
+    <appender name="PERF-APPENDER" class="com.alibaba.common.logging.spi.log4j.DailyRollingFileAppender">
+        <param name="file" value="${loggingRoot}/${sys_host_name}/common-perf.log"/>
+        <param name="append" value="true"/>
+        <param name="encoding" value="GBK"/>
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="%d [%X{loginUserEmail}/%X{loginUserID}/%X{remoteAddr}/%X{clientId} - %X{requestURIWithQueryString}] %-5p %c{2} - %m%n"/>
+        </layout>
+    </appender>
+
+    <!-- [公共Appender] web性能统计 -->
+    <appender name="FILTER-APPENDER" class="com.alibaba.common.logging.spi.log4j.DailyRollingFileAppender">
+        <param name="file" value="${loggingRoot}/${sys_host_name}/sofa-filter.log"/>
+        <param name="append" value="true"/>
+        <param name="encoding" value="GBK"/>
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="%d [%X{loginUserEmail}/%X{loginUserID}/%X{remoteAddr}/%X{clientId} - %X{requestURIWithQueryString}] %-5p %c{2} - %m%n"/>
+        </layout>
+    </appender>
+
+
+    <!-- [公共Appender] 系统初始化 -->
+    <appender name="SYSINIT-APPENDER" class="com.alibaba.common.logging.spi.log4j.DailyRollingFileAppender">
+        <param name="file" value="${loggingRoot}/${sys_host_name}/common-sysinit.log"/>
+        <param name="append" value="true"/>
+        <param name="encoding" value="GBK"/>
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="%d %-5p %c{2} - %m%n"/>
+        </layout>
+    </appender>
+
+
+    <!-- [分布式session] 系统初始化 -->
+    <appender name="COMMONSESSION-APPENDER" class="com.alibaba.common.logging.spi.log4j.DailyRollingFileAppender">
+        <param name="file" value="${loggingRoot}/${sys_host_name}/common-session.log"/>
+        <param name="append" value="true"/>
+        <param name="encoding" value="GBK"/>
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="%d %-5p %c{2} - %m%n"/>
+        </layout>
+    </appender>
+
+
+
+    <!-- [公共Appender] 恢复 -->
+    <appender name="RECOVERY-APPENDER" class="com.alibaba.common.logging.spi.log4j.DailyRollingFileAppender">
+        <param name="file" value="${loggingRoot}/${sys_host_name}/common-recovery.log"/>
+        <param name="append" value="true"/>
+        <param name="encoding" value="GBK"/>
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="%d %-5p %c{2} - %m%n"/>
+        </layout>
+    </appender>
+
+    <!-- [公共Appender] 控制台STDOUT -->
+    <appender name="STDOUT-APPENDER" class="org.apache.log4j.ConsoleAppender">
+        <param name="encoding" value="GBK"/>
+        <param name="target" value="System.out"/>
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="%-5p %c{2} - %m%n"/>
+        </layout>
+
+    </appender>
+
+    <!-- [公共Appender] 控制台STDERR -->
+    <appender name="STDERR-APPENDER" class="org.apache.log4j.ConsoleAppender">
+        <param name="encoding" value="GBK"/>
+        <param name="target" value="System.err"/>
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="%-5p %c{2} - %m%n"/>
+        </layout>
+
+    </appender>
+
+    <!-- [公共Appender] 空 -->
+    <appender name="NULL-APPENDER" class="org.apache.log4j.varia.NullAppender"/>
+
+    <!-- [公共Appender] Jakarta commons -->
+    <appender name="APACHE-APPENDER" class="com.alibaba.common.logging.spi.log4j.DailyRollingFileAppender">
+        <param name="file" value="${loggingRoot}/${sys_host_name}/common-apache.log"/>
+        <param name="append" value="true"/>
+        <param name="encoding" value="GBK"/>
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="%d [%X{loginUserEmail}/%X{loginUserID}/%X{remoteAddr}/%X{clientId} - %X{requestURIWithQueryString}] %-5p %c{2} - %m%n"/>
+        </layout>
+    </appender>
+
+    <!-- [公共Appender] Velocity -->
+    <appender name="VELOCITY-APPENDER" class="com.alibaba.common.logging.spi.log4j.DailyRollingFileAppender">
+        <param name="file" value="${loggingRoot}/${sys_host_name}/common-velocity.log"/>
+        <param name="append" value="true"/>
+        <param name="encoding" value="GBK"/>
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="%d [%X{loginUserEmail}/%X{loginUserID}/%X{remoteAddr}/%X{clientId} - %X{requestURIWithQueryString}] %-5p %c{2} - %m%n"/>
+        </layout>
+    </appender>
+
+    <!-- [公共Appender] 数据访问层 -->
+    <appender name="DAL-APPENDER" class="com.alibaba.common.logging.spi.log4j.DailyRollingFileAppender">
+        <param name="file" value="${loggingRoot}/${sys_host_name}/common-dal.log"/>
+        <param name="append" value="true"/>
+        <param name="encoding" value="GBK"/>
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="%d [%X{loginUserEmail}/%X{loginUserID}/%X{remoteAddr}/%X{clientId} - %X{requestURIWithQueryString}] %-5p %c{2} - %m%n"/>
+        </layout>
+    </appender>
+
+    <!-- [公共Appender] Security -->
+    <appender name="SECURITY-APPENDER" class="com.alibaba.common.logging.spi.log4j.DailyRollingFileAppender">
+        <param name="file" value="${loggingRoot}/${sys_host_name}/common-security.log"/>
+        <param name="append" value="true"/>
+        <param name="encoding" value="GBK"/>
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="%d [%X{loginUserEmail}/%X{loginUserID}/%X{remoteAddr}/%X{clientId} - %X{requestURIWithQueryString}] %-5p %c{2} - %m%n"/>
+        </layout>
+    </appender>
+
+
+    <root>
+        <level value="DEBUG"/>
+        <appender-ref ref="STDOUT-APPENDER"/>
+        <appender-ref ref="STDERR-APPENDER"/>
+    </root>
+
+</log4j:configuration>
+

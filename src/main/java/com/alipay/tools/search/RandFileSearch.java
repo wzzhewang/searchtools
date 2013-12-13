@@ -4,12 +4,10 @@ import com.alibaba.common.logging.Logger;
 import com.alibaba.common.logging.LoggerFactory;
 import com.alipay.tools.search.factor.ReadLine;
 import com.alipay.tools.search.factor.SearchFactor;
+import com.alipay.tools.search.io.BoundedInputStream;
 import com.alipay.tools.search.util.FileUtil;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.RandomAccessFile;
+import java.io.*;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
@@ -24,7 +22,7 @@ import java.util.concurrent.Callable;
  */
 public class RandFileSearch<T> extends BaseFileSearch<T> {
     private static final Logger logger = LoggerFactory.getLogger(RandFileSearch.class);
-    private int fileSplitSize = 1024 * 1024 * 1000;
+    private int fileSplitSize = 1024 * 1024 * 10;
 
     public String search(final String searchContent, final List<String> filePaths, final String rootPrefix, final SearchFactor<T> searchFactor) {
         StringBuffer paramKey = new StringBuffer();
@@ -59,32 +57,32 @@ public class RandFileSearch<T> extends BaseFileSearch<T> {
                     search.searchContent(key, new Callable<T>() {
                         public T call() {
 
-                            RandomAccessFile raf = null;
-                            final byte[] byteBuffer = new byte[BUFFER_SIZE];
+                            BufferedReader reader = null;
                             try {
-                                raf = new RandomAccessFile(fileName, "r");
-                                String columnList = null;
-                                raf.seek(pos[0]);
-                                List<String> result = new ArrayList<String>();
-                                while ((columnList = FileUtil.readLine(raf, Charset.forName("GBK"), pos[1], byteBuffer)) != null) {
-                                    logger.info("文件搜索：" + fileName);
-
-                                    columnList = searchFactor.searchFilter(columnList, searchContent);
-                                    if (columnList != null) {
-                                        result.add(columnList);
+                                reader = BoundedInputStream.createReader(new File(fileName),pos[0],pos[1]-pos[0],0,"GBK");
+                                String line=null;
+                                List<String> result=new ArrayList<String>();
+                                while((line=reader.readLine())!=null){
+                                    line=searchFactor.searchFilter(line,searchContent);
+                                    if(line!=null){
+                                        result.add(line);
                                     }
-
                                 }
-                                return searchFactor.consultResult(result, fileName);
+                                logger.info("文件搜索是："+fileName+"pos[0]"+pos[0]+"pos[1]"+pos[1] );
+                                return searchFactor.consultResult(result,fileName);
+
                             } catch (IOException e) {
                                 logger.error("文件搜索是发生错误：" + e.getMessage(), e);
-                            } finally {
+                            }
+                            catch(Exception e){
+                                logger.error("文件搜索是发生错误：" + e.getMessage(), e);
+                            }finally {
                                 try {
-                                    raf.close();
+                                    reader.close();
                                 } catch (IOException e) {
                                     logger.error("文件关闭是发生错误：" + e.getMessage(), e);
                                 } finally {
-                                    raf = null;
+                                    reader = null;
                                 }
                             }
                             return null;
