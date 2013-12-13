@@ -24,7 +24,7 @@ import java.util.concurrent.Callable;
  */
 public class RandFileSearch<T> extends BaseFileSearch<T> {
     private static final Logger logger = LoggerFactory.getLogger(RandFileSearch.class);
-    private int fileSplitSize = 1024 * 1024 * 100;
+    private int fileSplitSize = 1024 * 1024 * 1000;
 
     public String search(final String searchContent, final List<String> filePaths, final String rootPrefix, final SearchFactor<T> searchFactor) {
         StringBuffer paramKey = new StringBuffer();
@@ -57,34 +57,25 @@ public class RandFileSearch<T> extends BaseFileSearch<T> {
             private void search(final String key, final String searchContent, final String fileName, final Long[] pos) {
                 try {
                     search.searchContent(key, new Callable<T>() {
-                        private T search(final RandomAccessFile raf, final byte[] byteBuffer) throws IOException {
-                            return searchFactor.search(new ReadLine() {
-                                @Override
-                                public String readLine() throws IOException {
-                                    List<String> columnList = FileUtil.readLine(raf, Charset.forName("GBK"), pos[1], byteBuffer);
-
-                                    if (columnList == null || columnList.size() == 0) {
-                                        return null;
-                                    } else {
-                                        return columnList.get(0);
-                                    }
-                                }
-                            }, searchContent, fileName);
-                        }
-
                         public T call() {
 
                             RandomAccessFile raf = null;
                             final byte[] byteBuffer = new byte[BUFFER_SIZE];
                             try {
                                 raf = new RandomAccessFile(fileName, "r");
-                                List<String> columnList = null;
+                                String columnList = null;
                                 raf.seek(pos[0]);
+                                List<String> result = new ArrayList<String>();
                                 while ((columnList = FileUtil.readLine(raf, Charset.forName("GBK"), pos[1], byteBuffer)) != null) {
                                     logger.info("文件搜索：" + fileName);
-                                    return search(raf,byteBuffer);
-                                }
 
+                                    columnList = searchFactor.searchFilter(columnList, searchContent);
+                                    if (columnList != null) {
+                                        result.add(columnList);
+                                    }
+
+                                }
+                                return searchFactor.consultResult(result, fileName);
                             } catch (IOException e) {
                                 logger.error("文件搜索是发生错误：" + e.getMessage(), e);
                             } finally {

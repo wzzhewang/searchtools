@@ -392,28 +392,22 @@ public class FileUtil {
         }
     }
 
-    public static List<String> readLine(final RandomAccessFile raf, final Charset charset,
+    public static String readLine(final RandomAccessFile raf, final Charset charset,
                                         final long endPos, byte[] byteBuffer) throws IOException {
         int inputPos = 0;
-        List<String> cols = new ArrayList<String>();
         int c;
         boolean eol = false;
+        String result=null;
 
         while (!eol) {
             if (raf.getFilePointer() >= endPos) {
-                if (cols.size() == 0) {
-                    return null;
-                } else {
-                    return cols;
-                }
+               return result;
             }
             switch (c = raf.read()) {
                 case -1:
-                    if (cols.size() == 0) {
-                        return null;
-                    }
+                    return result;
                 case '\n':
-                    cols.add(new String(byteBuffer, 0, inputPos, charset));
+                    result=new String(byteBuffer, 0, inputPos, charset);
                     eol = true;
                     break;
                 case '\r':
@@ -422,13 +416,13 @@ public class FileUtil {
                     if ((raf.read()) != '\n') {
                         raf.seek(cur);
                     }
-                    cols.add(new String(byteBuffer, 0, inputPos, charset));
+                    result=new String(byteBuffer, 0, inputPos, charset);
                     break;
                 default:
                     byteBuffer[inputPos++] = ((byte) c);
                     break;
             }
         }
-        return cols;
+        return result;
     }
 }

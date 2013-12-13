@@ -10,6 +10,7 @@ import com.alipay.tools.search.thread.MutiThreadSearchImpl;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
@@ -75,21 +76,20 @@ public class BaseFileSearch<T> implements IFileSearch<T> {
             private void search(final String key, final String searchContent, final String fileName) {
                 try {
                     search.searchContent(key, new Callable<T>() {
-                        private T search(final BufferedReader reader)throws IOException {
-                            return searchFactor.search(new ReadLine() {
-                                @Override
-                                public String readLine() throws IOException{
-                                    return reader.readLine();
-                                }
-                            }, searchContent, fileName);
-                        }
-
                         public T call() {
                             BufferedReader reader = null;
                             try {
                                 reader = new BufferedReader(new FileReader(fileName), BUFFER_SIZE);
                                 logger.info("文件搜索：" + fileName);
-                                return search(reader);
+                                String line=null;
+                                List<String> result=new ArrayList<String>();
+                                while((line=reader.readLine())!=null){
+                                    line=searchFactor.searchFilter(line,searchContent);
+                                    if(line!=null){
+                                        result.add(line);
+                                    }
+                                }
+                                return searchFactor.consultResult(result,fileName);
 
                             } catch (IOException e) {
                                 logger.error("文件搜索是发生错误：" + e.getMessage(), e);

@@ -14,7 +14,8 @@ import java.util.List;
  */
 public class BaseSearchFactor implements SearchFactor<BaseSearchFactor> {
     private String key;
-    private List<String> result=new ArrayList<String>();
+    private List<String> result = new ArrayList<String>();
+
     String getKey() {
         return key;
     }
@@ -26,18 +27,22 @@ public class BaseSearchFactor implements SearchFactor<BaseSearchFactor> {
     public void setKey(String key) {
         this.key = key;
     }
+
     void setResult(List<String> result) {
         this.result = result;
     }
-    public  BaseSearchFactor search(ReadLine reader,String searchcode,String fileName) throws IOException {
-        BaseSearchFactor factor=new BaseSearchFactor();
-        factor.setKey(fileName);
-        String line=null;
-        while((line=reader.readLine())!=null){
-            if(line.indexOf(searchcode)>=0){
-                factor.getResult().add(line);
-            }
+
+    public String searchFilter(String line, String searchcode) {
+        if (line != null && line.indexOf(searchcode) >= 0) {
+            return line;
+        } else {
+            return null;
         }
+    }
+    public BaseSearchFactor consultResult(List<String> result,String key){
+        BaseSearchFactor factor=new BaseSearchFactor();
+        factor.setResult(result);
+        factor.setKey(key);
         return factor;
     }
 }

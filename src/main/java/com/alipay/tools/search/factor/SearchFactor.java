@@ -13,5 +13,7 @@ import java.util.List;
  */
 public interface SearchFactor<T> {
 
-    public  T search(ReadLine reader,String searchcode,String fileName)throws IOException;
+    public  String searchFilter(String content,String searchCode);
+
+    public  T  consultResult(List<String> result,String key);
 }

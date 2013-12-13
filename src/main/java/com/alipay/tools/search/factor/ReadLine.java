@@ -1,6 +1,7 @@
 package com.alipay.tools.search.factor;
 
 import java.io.IOException;
+import java.util.List;
 
 /**
  * Created with IntelliJ IDEA.
@@ -10,5 +11,5 @@ import java.io.IOException;
  * To change this template use File | Settings | File Templates.
  */
 public interface ReadLine {
-    public String readLine() throws IOException;
+    public List<String> readLine() throws IOException;
 }
